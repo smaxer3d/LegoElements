@@ -26,6 +26,8 @@ Especially when there is little room on the table with all the pieces spread out
 ![Note](https://github.com/smaxer3d/LegoElements/blob/master/img/note.png)
 
 And type it to a txt-file later:  
+*'Lego elements' expects a tab between the quantity and the element-id  
+The filename doesn't matter (yet), but ```[set number] - [set name].txt``` is good practice*
 ```
 1	4558952
 1	6035617
@@ -49,6 +51,7 @@ And type it to a txt-file later:
 
 ## Release notes
 
-| Version | Date        | Description  |
-|---------|-------------|--------------|
-| v0.0.1  | 28 Dec 2022 | First commit |
+| Version | Date        | Description                   |
+|---------|-------------|-------------------------------|
+| v1.0.0  | 29 Dec 2022 | Updated version, full release |
+| v0.0.1  | 28 Dec 2022 | First commit                  |

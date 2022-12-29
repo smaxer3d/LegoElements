@@ -11,6 +11,8 @@ import re
 
 disable_warnings(InsecureRequestWarning)
 
+VERSION = 'v1.0.0'
+
 URL = 'https://rebrickable.com/api/v3/'
 SEP = ';'
 
@@ -164,11 +166,9 @@ def csv_to_html() -> None:
         table = df.to_html(render_links=True, escape=False, index=False, justify='center')
         table = table.replace(' border="1" ', ' ')
 
-        # color = df['Color'].value_counts().to_dict()
         color = df.groupby('Color').agg(['sum', 'count'])['Pcs'].T.to_dict()  # {'Trans-Clear': {'sum': 1, 'count': 1}, 'White': {'sum': 3, 'count': 2}}
 
         html += f'<h2>{csv_file.split(".")[0]}</h2>\n' \
-                f'{table}\n' \
                 '<div class="row">\n' \
                 '  <div class="column">\n' \
                 '    <br>\n'
@@ -194,7 +194,8 @@ def csv_to_html() -> None:
 
         html += f'    {df["Pcs"].sum()}\n' \
                 '  </div>\n' \
-                '</div>\n'
+                '</div>\n' \
+                f'{table}\n'
 
     html += '</body>\n</html>'
 
@@ -252,6 +253,9 @@ def options() -> dict:
 
 
 if __name__ == '__main__':
+
+    print(f'Lego elements - {VERSION}')
+    print()
 
     option = options()
 
