@@ -61,6 +61,9 @@ This file is perfect for working with spreadsheets or uploading to web-shops or 
 Finally, 'Lego elements' gets all the csv-files from the directory (to combine all lists into 1 html-file),
 gets extra info per csv-file and puts it in a nice web-page.  
 From your browser, you can use it directly or print it (to PDF).  
+The 'Remark'-column may be used to note the web-shop(s) that were used to order the parts.
+Or, to note that the part that you find in the shop is slightly damaged, for instance.
+
 ![PDF](https://github.com/smaxer3d/LegoElements/blob/master/img/pdf.png)
 
 ## Release notes
