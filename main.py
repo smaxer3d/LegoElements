@@ -7,6 +7,7 @@ from urllib3 import disable_warnings
 import sys
 import time
 import pandas as pd
+import re
 
 disable_warnings(InsecureRequestWarning)
 
@@ -149,6 +150,9 @@ def csv_to_html() -> None:
         '<body>\n'
 
     for csv_file in csv_files:
+
+        nums = re.findall(r'\d+', csv_file)
+
         df = pd.read_csv(join(file_dir, csv_file), sep=SEP)
         df.rename(columns={
             'quantity': 'Pcs',
