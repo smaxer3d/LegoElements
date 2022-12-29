@@ -23,7 +23,7 @@ That's where that link to an image comes in!
 
 Personally, I like to write a note.  
 Especially when there is little room on the table with all the pieces spread out.  
-![Note](img\note.png)
+![Note](https://github.com/smaxer3d/LegoElements/blob/master/img/note.png)
 
 And type it to a txt-file later:  
 ```
