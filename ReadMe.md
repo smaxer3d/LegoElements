@@ -14,7 +14,8 @@ First, the number that you took from the parts-list is not a part-number, but an
 Some web-shops don't accept the element-id, but the actual part-number and the color.  
 Since we can't derive the part-number from the element-id and it's hard to exactly name the color of the piece, 
 we use the [Rebrickable API](https://rebrickable.com/api/) to get this information.
-We also get a description and a link to an image of the part while we're at it.
+We also get a description and a link to an image of the part while we're at it.  
+*Btw, the 1-second delay between API-calls is respected*
 
 Second, an element-id, part-number, color and description doesn't help you much when you are at a shop where they sell second-hand Lego that you have to gather from large boxes of mixed pieces.  
 That's where that link to an image comes in!
@@ -23,11 +24,13 @@ That's where that link to an image comes in!
 
 Personally, I like to write a note.  
 Especially when there is little room on the table with all the pieces spread out.  
-![Note](https://github.com/smaxer3d/LegoElements/blob/master/img/note.png)
+![Note](https://github.com/smaxer3d/LegoElements/blob/master/img/note.png)  
+And type it into a txt-file later:
 
-And type it to a txt-file later:  
-*'Lego elements' expects a tab between the quantity and the element-id  
-The filename doesn't matter (yet), but ```[set number] - [set name].txt``` is good practice*
+### 1. txt-file
+  
+'Lego elements' expects a tab between the quantity and the element-id  
+The filename should be ```[set_nr] - [set_name].txt```, as 'Lego elements' can use the ```set_nr``` to get additional info.
 ```
 1	4558952
 1	6035617
@@ -47,11 +50,23 @@ The filename doesn't matter (yet), but ```[set number] - [set name].txt``` is go
 1	6052266
 1	6093529
 ```
+### 2. csv-file
 
+'Lego elements' gets the info (Part, Color, Description and Image) from the Rebrickable API line by line and
+writes it into a csv-file with the same name as the txt-file (without the extension)  
+This file is perfect for working with spreadsheets or uploading to web-shops or online parts-list imports.
+
+### 3. 'Lego checklist.html'
+
+Finally, 'Lego elements' gets all the csv-files from the directory (to combine all lists into 1 html-file),
+gets extra info per csv-file and puts it in a nice web-page.  
+From your browser, you can use it directly or print it (to PDF).  
+![PDF](https://github.com/smaxer3d/LegoElements/blob/master/img/pdf.png)
 
 ## Release notes
 
 | Version | Date        | Description                   |
 |---------|-------------|-------------------------------|
+| v1.1.0  | 30 Dec 2022 | Get set image + info          |
 | v1.0.0  | 29 Dec 2022 | Updated version, full release |
 | v0.0.1  | 28 Dec 2022 | First commit                  |

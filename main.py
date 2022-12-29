@@ -1,75 +1,37 @@
+
 from os import listdir
 from os.path import isfile, join, isdir, dirname
-from requests import Session
-from urllib3.exceptions import InsecureRequestWarning
-from urllib3 import disable_warnings
 
 import sys
-import time
 import pandas as pd
-import re
 
-disable_warnings(InsecureRequestWarning)
+import api
 
-VERSION = 'v1.0.0'
+# import re
+# nums = re.findall(r'\d+', csv_file)
 
-URL = 'https://rebrickable.com/api/v3/'
+VERSION = 'v1.1.0'
 SEP = ';'
 
 file = ''
 file_dir = '.\\'
 
 
-def get_api(url, endpoint, params='', headers=None, token=''):
-    if not headers:
-        headers = {
-            'Authorization': token,
-            # "Content-Type": "application/json"
-        }
-
-    uri = url + endpoint + params
-
-    with Session() as session:
-        try:
-            response = session.get(
-                uri,
-                headers=headers,
-                verify=False
-            )
-            if response.status_code == 200:
-                res = response.json()
-            else:
-                res = response.text
-            return response.status_code, res
-
-        except Exception as e:
-            print("API GET / Parse Error:  {}".format(e))
-            return None
-
-
-def get_element(token, element_id):
-    res_stat, res = get_api(
-        token='key ' + token,
-        url=URL,
-        endpoint=f'lego/elements/{str(element_id)}'
-    )
-    if res_stat != 200:
-        print(f'Status: {res_stat}')
-        print(res)
-    return res
-
-
-def get_data_write_csv_file(source: list, csv_file: str, key: str) -> None:
+def get_data_write_csv_file(source: list, csv_file: str, token: str) -> None:
     """
     Gets a specific list of quantity and Lego elements from the corresponding API and writes it to a specific csv-file
 
     :param source: list of quantity and Lego elements
     :param csv_file: file to write the data to
-    :param key: Key needed for the ReBrickable API
+    :param token: Key needed for the ReBrickable API
     :return: Nothing
     """
 
-    if not key:
+    if not token:
+        return
+
+    if isfile(csv_file):
+        print(f'{csv_file} already exists. Skipping API-get')
         return
 
     output = open(csv_file, 'w', encoding='utf-8')
@@ -89,7 +51,7 @@ def get_data_write_csv_file(source: list, csv_file: str, key: str) -> None:
 
         print(f'Processing: {element_id} ({quantity} pieces)')
 
-        info = get_element(key, element_id)
+        info = api.get_element(token, element_id)
         output.write(
             quantity + SEP +
             element_id + SEP +
@@ -99,12 +61,10 @@ def get_data_write_csv_file(source: list, csv_file: str, key: str) -> None:
             str(info['element_img_url']) + SEP + ' \n'
         )
 
-        time.sleep(1)
-
     output.close()
 
 
-def csv_to_html() -> None:
+def csv_to_html(token: str) -> None:
     """
     Read CSV-file and write it to an HTML table
 
@@ -153,7 +113,11 @@ def csv_to_html() -> None:
 
     for csv_file in csv_files:
 
-        nums = re.findall(r'\d+', csv_file)
+        if token:
+            set_num = csv_file.split(' - ')[0]
+            res, res_stat = api.get_set(token, set_num)
+            if res_stat == 200:
+                res['theme'] = api.get_theme(token, res['theme_id'])
 
         df = pd.read_csv(join(file_dir, csv_file), sep=SEP)
         df.rename(columns={
@@ -162,11 +126,12 @@ def csv_to_html() -> None:
             'color': 'Color'
         }, inplace=True)
         df['Image'] = '<img src="' + df['Image'] + '" width="80">'
+        df.sort_values(by=['Color'], inplace=True)
 
         table = df.to_html(render_links=True, escape=False, index=False, justify='center')
         table = table.replace(' border="1" ', ' ')
 
-        color = df.groupby('Color').agg(['sum', 'count'])['Pcs'].T.to_dict()  # {'Trans-Clear': {'sum': 1, 'count': 1}, 'White': {'sum': 3, 'count': 2}}
+        color = df.groupby('Color').agg(['sum', 'count'])['Pcs'].T.to_dict()
 
         html += f'<h2>{csv_file.split(".")[0]}</h2>\n' \
                 '<div class="row">\n' \
@@ -193,8 +158,25 @@ def csv_to_html() -> None:
             html += f'    {value["sum"]}<br>\n'
 
         html += f'    {df["Pcs"].sum()}\n' \
-                '  </div>\n' \
-                '</div>\n' \
+                '  </div>\n'
+
+        if token and res_stat == 200:
+            image = res['set_img_url']
+            html += '  <div class="column">\n' \
+                    f'    <img src="{image}" height="300" align="top">\n' \
+                    '  </div>\n' \
+                    '  <div class="column">\n' \
+                    f'    Set-nr. {res["set_num"]}<br>\n' \
+                    f'    Name: {res["name"]}<br>\n' \
+                    f'    Year: {res["year"]}<br>\n' \
+                    f'    Theme: {res["theme"]}<br>\n' \
+                    f'    Nr of parts: {res["num_parts"]}<br>\n' \
+                    f'    Total ({df["Pcs"].sum()}) =' \
+                    f'    {round(df["Pcs"].sum() / int(res["num_parts"]) * 100, 1)}%' \
+                    f'    of {res["num_parts"]}\n' \
+                    '  </div>\n'
+
+        html += '</div>\n' \
                 f'{table}\n'
 
     html += '</body>\n</html>'
@@ -239,8 +221,8 @@ def options() -> dict:
 
     if 'k' in output.keys():
         if isfile(output['k']):
-            with open(output['k'], 'r') as key:
-                output['k'] = key.readlines()
+            with open(output['k'], 'r') as key_file:
+                output['k'] = key_file.readlines()
     else:
         print('Missing key, continue without API-get')
 
@@ -268,4 +250,8 @@ if __name__ == '__main__':
         if 'k' in option.keys():
             get_data_write_csv_file(lines, file_base + '.csv', option['k'])
 
-    csv_to_html()
+    if 'k' in option.keys():
+        option_key = option['k']
+    else:
+        option_key = None
+    csv_to_html(option_key)
