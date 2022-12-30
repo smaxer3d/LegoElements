@@ -80,8 +80,9 @@ python.exe main.py [[-Parameter] [Option]]
 
 ## Release notes
 
-| Version | Date        | Description                   |
-|---------|-------------|-------------------------------|
-| v1.1.0  | 30 Dec 2022 | Get set image + info          |
-| v1.0.0  | 29 Dec 2022 | Updated version, full release |
-| v0.0.1  | 28 Dec 2022 | First commit                  |
+| Version | Date        | Description                       |
+|---------|-------------|-----------------------------------|
+| v1.2.0  | 30 Dec 2022 | More info-output during execution |
+| v1.1.0  | 30 Dec 2022 | Get set image + info              |
+| v1.0.0  | 29 Dec 2022 | Updated version, full release     |
+| v0.0.1  | 28 Dec 2022 | First commit                      |

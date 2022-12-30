@@ -10,7 +10,7 @@ import api
 # import re
 # nums = re.findall(r'\d+', csv_file)
 
-VERSION = 'v1.1.0'
+VERSION = 'v1.2.0'
 SEP = ';'
 
 file = ''
@@ -31,8 +31,10 @@ def get_data_write_csv_file(source: list, csv_file: str, token: str) -> None:
         return
 
     if isfile(csv_file):
-        print(f'{csv_file} already exists. Skipping API-get')
+        print(f'\'{csv_file}\' already exists. Skipping API-get')
         return
+
+    print('Getting elements:')
 
     output = open(csv_file, 'w', encoding='utf-8')
     output.write(f'quantity{SEP}Element-id{SEP}part{SEP}color{SEP}Description{SEP}Image{SEP}Remark\n')
@@ -115,8 +117,11 @@ def csv_to_html(token: str) -> None:
 
         if token:
             set_num = csv_file.split(' - ')[0]
+            print(f'Getting {set_num}', end='')
+
             res, res_stat = api.get_set(token, set_num)
             if res_stat == 200:
+                print(f' - {res["name"]}')
                 res['theme'] = api.get_theme(token, res['theme_id'])
 
         df = pd.read_csv(join(file_dir, csv_file), sep=SEP)
@@ -184,6 +189,8 @@ def csv_to_html(token: str) -> None:
     with open(join(file_dir, 'Lego checklist.html'), 'w') as html_file:
         html_file.writelines(html)
 
+    print('Html-file written')
+
 
 def options() -> dict:
     """
@@ -210,11 +217,11 @@ def options() -> dict:
             file = output['i']
             if isdir(dirname(file)):
                 file_dir = dirname(file)
-            print(f'Using file {file}')
+            print(f'Using file \'{file}\'')
 
         elif isdir(output['i']):
             file_dir = output['i']
-            print(f'Using dir {file_dir}')
+            print(f'Using dir \'{file_dir}\'')
 
         else:
             print(output['i'])
@@ -222,7 +229,7 @@ def options() -> dict:
     if 'k' in output.keys():
         if isfile(output['k']):
             with open(output['k'], 'r') as key_file:
-                output['k'] = key_file.readlines()
+                output['k'] = key_file.readline()
     else:
         print('Missing key, continue without API-get')
 
@@ -255,3 +262,6 @@ if __name__ == '__main__':
     else:
         option_key = None
     csv_to_html(option_key)
+
+    print()
+    print('Done')
