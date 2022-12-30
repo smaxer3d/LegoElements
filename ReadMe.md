@@ -29,8 +29,9 @@ And type it into a txt-file later:
 
 ### 1. txt-file
   
-'Lego elements' expects a tab between the quantity and the element-id  
-The filename should be ```[set_nr] - [set_name].txt```, as 'Lego elements' can use the ```set_nr``` to get additional info.
+'Lego elements' expects a tab between the quantity and the element-id.  
+The filename should be ```[set_nr] - [set_name].txt```, as 'Lego elements' can use the ```set_nr``` to get additional info.  
+```set_name``` is not used, so it can be the name of the set or a description.
 ```
 1	4558952
 1	6035617
@@ -53,18 +54,29 @@ The filename should be ```[set_nr] - [set_name].txt```, as 'Lego elements' can u
 ### 2. csv-file
 
 'Lego elements' gets the info (Part, Color, Description and Image) from the Rebrickable API line by line and
-writes it into a csv-file with the same name as the txt-file (without the extension)  
+writes it into a csv-file with the same name as the txt-file (without the extension) in the same folder.  
 This file is perfect for working with spreadsheets or uploading to web-shops or online parts-list imports.
 
 ### 3. 'Lego checklist.html'
 
 Finally, 'Lego elements' gets all the csv-files from the directory (to combine all lists into 1 html-file),
-gets extra info per csv-file and puts it in a nice web-page.  
+gets extra info per csv-file and puts it in a nice web-page and writes it to the same folder.  
 From your browser, you can use it directly or print it (to PDF).  
 The 'Remark'-column may be used to note the web-shop(s) that were used to order the parts.
 Or, to note that the part that you find in the shop is slightly damaged, for instance.
 
-![PDF](https://github.com/smaxer3d/LegoElements/blob/master/img/pdf.png)
+![PDF](https://github.com/smaxer3d/LegoElements/blob/master/img/pdf.png)  
+Using a scale of 75%, gave the best result in my opinion.
+
+## Command line
+
+```
+python.exe main.py [[-Parameter] [Option]]
+```
+| Parameter | Function | Options            | Description                                                                                                                              |
+|-----------|----------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| i         | input    | \<path><br>\<file> | - Enter a path will only get the csv-files in the directory and (re-)write the html-file<br/>- Enter a (txt-)file to create the csv-file |
+| k         | key      | \<key>             | The Rebrickable API token. It can also be a file that only contains the token. If not supplied, no information is get thru this API      |
 
 ## Release notes
 
